@@ -40,3 +40,10 @@ getFromChromeStorage("removeGoogleAIOverviews", (value) => {
         }, 1000);
     }
 });
+
+// Listen for messages from the popup to update the page if the setting changes
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "toggleChange") {
+        window.location.reload();
+    }
+});

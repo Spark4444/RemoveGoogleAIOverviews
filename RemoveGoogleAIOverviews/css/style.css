@@ -1,5 +1,4 @@
 .btnText {
-    color: white;
     font-size: 15px;
 }
 
@@ -49,7 +48,8 @@
 
 body {
     align-items: center;
-    background-color: rgb(22, 22, 22);
+    background-color: #161616;
+    color: white;
     display: flex;
     font-family: Helvetica;
     height: 100%;
@@ -64,3 +64,13 @@ html {
     width: 238px;
 }
 
+@media (prefers-color-scheme: light) {
+    body {
+        background: white;
+        color: black;
+    }
+
+    .switch > input[type=checkbox]:checked + .btn {
+        background: #00a916;
+    }
+}

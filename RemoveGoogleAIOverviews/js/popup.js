@@ -14,6 +14,12 @@ checkbox.addEventListener("input", () => {
         value = checkIfAValueIsSet(value, false);
         if (value !== isChecked) {
             saveToChromeStorage("removeGoogleAIOverviews", isChecked);
+
+            // Send a message to the content script to update the page
+            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                chrome.tabs.sendMessage(tabs[0].id, {action: "toggleChange"});
+            });
+
         }
     });
 });
