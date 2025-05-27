@@ -23,19 +23,19 @@ function checkIfAValueIsSet(value, defaultValue){
 // Function to remove the AI overview element
 function removeAIOverview(remove = true) {
     if (remove){
-        aiOveriew.remove();
+        aiOverview.remove();
 
         setTimeout(() => {
-            let aiOveriew = document.querySelector("#eKIzJc");
-            if (aiOveriew) {
-                aiOveriew.remove();
+            let aiOverview = document.querySelector("#eKIzJc");
+            if (aiOverview) {
+                aiOverview.remove();
             }
         }, 1000);
     }
 }
 
 // Variables
-let aiOveriew = document.querySelector("#eKIzJc");
+let aiOverview = document.querySelector("#eKIzJc");
 let removeGoogleAIOverviews = true;
 
 // Get the value from Chrome storage
@@ -44,7 +44,7 @@ getFromChromeStorage("removeGoogleAIOverviews", (value) => {
 
     // Remove the AI overview if the setting is enabled
     // The "removeGoogleAIOverviews" varaible is reversed to match the checkbox state
-    if (aiOveriew && !removeGoogleAIOverviews) {
+    if (aiOverview && !removeGoogleAIOverviews) {
         removeAIOverview();
     }
 });
