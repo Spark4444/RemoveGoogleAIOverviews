@@ -20,16 +20,9 @@ function checkIfAValueIsSet(value, defaultValue){
     }
 }
 
-// Variables
-let aiOveriew = document.querySelector("#eKIzJc");
-let removeGoogleAIOverviews = true;
-
-// Get the value from Chrome storage
-getFromChromeStorage("removeGoogleAIOverviews", (value) => {
-    removeGoogleAIOverviews = checkIfAValueIsSet(value, true);
-
-    // Remove the AI overview if the setting is enabled
-    if (aiOveriew && !removeGoogleAIOverviews) {
+// Function to remove the AI overview element
+function removeAIOverview(remove = true) {
+    if (remove){
         aiOveriew.remove();
 
         setTimeout(() => {
@@ -39,6 +32,32 @@ getFromChromeStorage("removeGoogleAIOverviews", (value) => {
             }
         }, 1000);
     }
+}
+
+// Variables
+let aiOveriew = document.querySelector("#eKIzJc");
+let removeGoogleAIOverviews = true;
+
+// Get the value from Chrome storage
+getFromChromeStorage("removeGoogleAIOverviews", (value) => {
+    removeGoogleAIOverviews = checkIfAValueIsSet(value, true);
+
+    // Remove the AI overview if the setting is enabled
+    // The "removeGoogleAIOverviews" varaible is reversed to match the checkbox state
+    if (aiOveriew && !removeGoogleAIOverviews) {
+        removeAIOverview();
+    }
+});
+
+// Update the page if the setting changes when the tab is focused (e.g. when the user returns to the tab)
+window.addEventListener("focus", () => {
+    getFromChromeStorage("removeGoogleAIOverviews", (value) => {
+        let currentRemoveAIOverviews = checkIfAValueIsSet(value, true);
+        
+        if (currentRemoveAIOverviews !== removeGoogleAIOverviews) {
+            window.location.reload();
+        }
+    });
 });
 
 // Listen for messages from the popup to update the page if the setting changes
