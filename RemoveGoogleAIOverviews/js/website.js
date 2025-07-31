@@ -55,7 +55,7 @@ function hideShowAIOverview(hide = true) {
                 else {
                     aiOverviewElement.style.display = "";
                 }
-                clearInterval(interval);
+                clearInterval(hideInterval); 
             }
         }, 100);
     }
@@ -67,14 +67,15 @@ hideShowAIOverview(true);
 
 // Get the value from Chrome storage
 getFromChromeStorage("removeGoogleAIOverviews", (value) => {
-    removeGoogleAIOverviews = checkIfAValueIsSet(value, false);
+    removeGoogleAIOverviews = checkIfAValueIsSet(value, true);
 
-    // Save the value if it is not set
-    saveToChromeStorage("removeGoogleAIOverviews", removeGoogleAIOverviews);
+    if (value !== undefined) {
+        // Save the value if it is not set
+        saveToChromeStorage("removeGoogleAIOverviews", removeGoogleAIOverviews);
+    }
 
     // Remove the AI overview if the setting is enabled
-    // The "removeGoogleAIOverviews" varaible is reversed to match the checkbox state
-    hideShowAIOverview(!removeGoogleAIOverviews);
+    hideShowAIOverview(removeGoogleAIOverviews);
 });
 
 // Listen for changes in Chrome storage to update the page
@@ -91,7 +92,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
         if (newValue !== removeGoogleAIOverviews) {
             removeGoogleAIOverviews = newValue;
             // Hide or show the AI overview element based on the new value
-            hideShowAIOverview(!removeGoogleAIOverviews);
+            hideShowAIOverview(removeGoogleAIOverviews);
         }
     }
 });
