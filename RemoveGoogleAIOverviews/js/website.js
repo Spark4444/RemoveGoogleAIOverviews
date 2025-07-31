@@ -27,36 +27,54 @@ function selectAiOverviewElement() {
 
 // Variables
 let removeGoogleAIOverviews = true;
+let hideInterval;
 
-// Function to remove the AI overview element
-function removeAIOverview(remove = true) {
-    // Check the argument remove and check if the element exists
-    let aiOverview = selectAiOverviewElement();
-    if (remove && aiOverview) {
-        aiOverview.remove();
-
-        const interval = setInterval(() => {
-            aiOverview = selectAiOverviewElement();
-            if (aiOverview) {
-                aiOverview.remove();
+// Function to hide or show the AI overview element
+function hideShowAIOverview(hide = true) {
+    const aiOverviewElement = selectAiOverviewElement();
+    if (aiOverviewElement) {
+        if (hide) {
+            aiOverviewElement.style.display = "none";
+        } 
+        else {
+            aiOverviewElement.style.display = "";
+        }
+    }
+    else {
+        // If element is not found, wait for it to appear and then hide or show it
+        // Clear any existing interval to avoid multiple intervals running
+        if (hideInterval) {
+            clearInterval(hideInterval);
+        }
+        hideInterval = setInterval(() => {
+            const aiOverviewElement = selectAiOverviewElement();
+            if (aiOverviewElement) {
+                if (hide) {
+                    aiOverviewElement.style.display = "none";
+                } 
+                else {
+                    aiOverviewElement.style.display = "";
+                }
+                clearInterval(interval);
             }
         }, 100);
-
-        // Stop the interval after 5 seconds to prevent memory leaks
-        setTimeout(() => {
-            clearInterval(interval);
-        }, 5000);
     }
 }
+
+// Initial call to hide the AI overview element before checking the storage value
+// Storage value takes time to load, so we hide it initially
+hideShowAIOverview(true);
 
 // Get the value from Chrome storage
 getFromChromeStorage("removeGoogleAIOverviews", (value) => {
     removeGoogleAIOverviews = checkIfAValueIsSet(value, false);
+
+    // Save the value if it is not set
     saveToChromeStorage("removeGoogleAIOverviews", removeGoogleAIOverviews);
 
     // Remove the AI overview if the setting is enabled
     // The "removeGoogleAIOverviews" varaible is reversed to match the checkbox state
-    removeAIOverview(!removeGoogleAIOverviews);
+    hideShowAIOverview(!removeGoogleAIOverviews);
 });
 
 // Listen for changes in Chrome storage to update the page
@@ -71,7 +89,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "sync" && changes.removeGoogleAIOverviews) {
         const newValue = changes.removeGoogleAIOverviews.newValue;
         if (newValue !== removeGoogleAIOverviews) {
-            window.location.reload();
+            removeGoogleAIOverviews = newValue;
+            // Hide or show the AI overview element based on the new value
+            hideShowAIOverview(!removeGoogleAIOverviews);
         }
     }
 });
